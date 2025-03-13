@@ -1,7 +1,5 @@
+import java.util.Scanner;
 
-/**
- * A simple Nim game implementation in Java.
- */
 public class Nim {
     /**
      * The main method to run the Nim game.
@@ -9,13 +7,39 @@ public class Nim {
      * @param args Command line arguments (not used).
      */
     public static void main(String[] args) {
-        // TODO: Print the current state of the piles
-        // TODO: Prompt the player to choose a pile
-        // TODO: Prompt the player to choose the number of stones to remove
-        // TODO: Validate the player's move
-        // TODO: Update the chosen pile
-        // TODO: Switch to the next player
+        int[] piles = {3, 4, 5}; // Example piles with 3, 4, and 5 stones
+        Scanner scanner = new Scanner(System.in);
+        boolean gameOver = false;
+        int currentPlayer = 1; // Player 1 starts
 
+        // Main game loop
+        while (!gameOver) {
+            printPiles(piles); // Print the piles
+            System.out.println("Player " + currentPlayer + "'s turn.");
+            System.out.print("Choose a pile (0, 1, 2): ");
+            int pile = scanner.nextInt();
+            System.out.print("Enter number of stones to remove: ");
+            int stones = scanner.nextInt();
+
+            // Validate the move
+            if (isValidMove(piles, pile, stones)) {
+                // Update the chosen pile
+                piles[pile] -= stones;
+
+                // Check if the game is over
+                if (isGameOver(piles)) {
+                    gameOver = true;
+                    System.out.println("Player " + currentPlayer + " wins!");
+                } else {
+                    // Switch to the next player
+                    currentPlayer = (currentPlayer == 1) ? 2 : 1;
+                }
+            } else {
+                System.out.println("Invalid move. Please try again.");
+            }
+        }
+
+        scanner.close(); // Close the scanner
     }
 
     /**
@@ -24,7 +48,13 @@ public class Nim {
      * @param piles The array representing the number of stones in each pile.
      */
     public static void printPiles(int[] piles) {
-        // TODO: Print the piles with stars representing the stones
+        for (int i = 0; i < piles.length; i++) {
+            System.out.print("Pile " + i + ": ");
+            for (int j = 0; j < piles[i]; j++) {
+                System.out.print("*");
+            }
+            System.out.println();
+        }
     }
 
     /**
@@ -34,8 +64,13 @@ public class Nim {
      * @return True if all piles are empty, false otherwise.
      */
     public static boolean isGameOver(int[] piles) {
-        // TODO: Check if all piles are empty
-        return false;
+        // If all piles are empty, the game is over
+        for (int pile : piles) {
+            if (pile > 0) {
+                return false; // At least one pile has stones, so the game isn't over
+            }
+        }
+        return true; // All piles are empty, the game is over
     }
 
     /**
@@ -47,7 +82,16 @@ public class Nim {
      * @return True if the move is valid, false otherwise.
      */
     public static boolean isValidMove(int[] piles, int pile, int stones) {
-        // TODO: Validate the player's move
-        return false;
+        // Check if the pile is valid (within bounds)
+        if (pile < 0 || pile >= piles.length) {
+            return false;
+        }
+
+        // Check if the number of stones is valid (greater than 0 and not more than the stones in the chosen pile)
+        if (stones <= 0 || stones > piles[pile]) {
+            return false;
+        }
+
+        return true; // The move is valid
     }
 }
